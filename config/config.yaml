@@ -1,0 +1,84 @@
+input: input/1_samples_typing_results_filtered_inlab_samples_readded.20260105.csv
+output: results
+work: work
+
+threads: 8
+seed: 42
+
+genome_column: Genome
+country_column: country
+date_column: Date
+
+datasets:
+ - all
+ - mrsa
+
+###############################################################################
+# Temporal/geographical sampling
+###############################################################################
+
+sampling:
+
+  temporal:
+
+    resolution: week
+    city_column: city
+    country_column: country
+    max_per_city_week: 1
+    max_per_country_week_unknown_city: 2
+
+  population:
+    enabled: false
+    population_file: config/population.tsv
+    people_per_genome: 1000000
+    minimum_per_country: 1
+
+###############################################################################
+# MRSA definition
+###############################################################################
+
+mrsa:
+  column: "sccmec|mecA"
+  positive_values:
+    - "+"
+
+###############################################################################
+# Evaluation
+###############################################################################
+
+evaluation:
+
+  compare:
+    - mlst
+    - "Capsule type"
+    - country
+    - year
+    - "sccmec|mecA"
+
+###############################################################################
+# Plots
+###############################################################################
+
+plots:
+
+  distributions:
+    - mlst
+    - Capsule type
+    - country
+
+  temporal:
+    - country
+    - city
+    - mlst
+    - Capsule type
+
+  qc:
+    - retained_fraction
+    - population_vs_genomes
+    - temporal_density
+    - cumulative
+
+  composition:
+    - capsule_top
+    - mlst_top
+    - mlst_capsule_top
